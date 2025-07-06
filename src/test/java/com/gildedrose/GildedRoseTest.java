@@ -27,7 +27,7 @@ class GildedRoseTest {
         app.updateQuality();
         
         assertEquals(-1, items[0].sellIn);
-        assertEquals(18, items[0].quality);
+        assertEquals(18, items[0].quality); // Decreased by 2
     }
 
     @Test
@@ -62,7 +62,7 @@ class GildedRoseTest {
         app.updateQuality();
         
         assertEquals(-1, items[0].sellIn);
-        assertEquals(22, items[0].quality);
+        assertEquals(22, items[0].quality); // Increased by 2
     }
 
     @Test
@@ -132,14 +132,20 @@ class GildedRoseTest {
         };
         GildedRose app = new GildedRose(items);
         
+        // Simulate 3 days
         for (int day = 0; day < 3; day++) {
             app.updateQuality();
         }
         
+        // Normal item: 5-3=2 sellIn, 10-3=7 quality
         assertEquals(2, items[0].sellIn);
         assertEquals(7, items[0].quality);
+        
+        // Aged Brie: 3-3=0 sellIn, 5+3=8 quality
         assertEquals(0, items[1].sellIn);
         assertEquals(8, items[1].quality);
+        
+        // Sulfuras: never changes
         assertEquals(0, items[2].sellIn);
         assertEquals(80, items[2].quality);
     }
@@ -147,6 +153,7 @@ class GildedRoseTest {
     @Test
     @DisplayName("Comprehensive original behavior preservation test")
     void originalBehaviorPreservation() {
+        // Test with the exact items from the original TexttestFixture
         Item[] items = new Item[] {
             new Item("+5 Dexterity Vest", 10, 20),
             new Item("Aged Brie", 2, 0),
@@ -161,20 +168,28 @@ class GildedRoseTest {
         
         app.updateQuality();
         
+        // Verify expected behavior for each item
         assertEquals(9, items[0].sellIn);
         assertEquals(19, items[0].quality);
+        
         assertEquals(1, items[1].sellIn);
         assertEquals(1, items[1].quality);
+        
         assertEquals(4, items[2].sellIn);
         assertEquals(6, items[2].quality);
+        
         assertEquals(0, items[3].sellIn);
         assertEquals(80, items[3].quality);
+        
         assertEquals(-1, items[4].sellIn);
         assertEquals(80, items[4].quality);
+        
         assertEquals(14, items[5].sellIn);
         assertEquals(21, items[5].quality);
+        
         assertEquals(9, items[6].sellIn);
         assertEquals(50, items[6].quality);
+        
         assertEquals(4, items[7].sellIn);
         assertEquals(50, items[7].quality);
     }
