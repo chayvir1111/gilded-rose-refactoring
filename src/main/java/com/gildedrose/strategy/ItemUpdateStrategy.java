@@ -14,4 +14,4 @@ public interface ItemUpdateStrategy {
      * @param item The item to be updated
      */
     void updateItem(Item item);
-}			
+}
