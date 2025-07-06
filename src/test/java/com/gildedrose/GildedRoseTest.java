@@ -193,4 +193,75 @@ class GildedRoseTest {
         assertEquals(4, items[7].sellIn);
         assertEquals(50, items[7].quality);
     }
+    @Test
+    @DisplayName("Conjured items should degrade twice as fast as normal items")
+    void conjuredItemsDegradeTwiceAsFast() {
+        Item[] items = new Item[] { new Item("Conjured Mana Cake", 10, 20) };
+        GildedRose app = new GildedRose(items);
+        
+        app.updateQuality();
+        
+        assertEquals(9, items[0].sellIn);
+        assertEquals(18, items[0].quality); // Decreased by 2
+    }
+
+    @Test
+    @DisplayName("Conjured items should degrade 4x as fast after sell date")
+    void conjuredItemsDegradeFourTimesAsFastAfterSellDate() {
+        Item[] items = new Item[] { new Item("Conjured Mana Cake", 0, 20) };
+        GildedRose app = new GildedRose(items);
+        
+        app.updateQuality();
+        
+        assertEquals(-1, items[0].sellIn);
+        assertEquals(16, items[0].quality); // Decreased by 4 (2 + 2)
+    }
+
+    @Test
+    @DisplayName("Conjured items quality should never go below 0")
+    void conjuredItemQualityNeverGoesNegative() {
+        Item[] items = new Item[] { new Item("Conjured Mana Cake", 5, 1) };
+        GildedRose app = new GildedRose(items);
+        
+        app.updateQuality();
+        
+        assertEquals(0, items[0].quality);
+    }
+
+    @Test
+    @DisplayName("Various conjured item names should work")
+    void variousConjuredItemNamesWork() {
+        Item[] items = new Item[] {
+            new Item("Conjured Mana Cake", 5, 10),
+            new Item("Conjured Sword", 3, 8),
+            new Item("Conjured Shield of Power", 1, 6)
+        };
+        GildedRose app = new GildedRose(items);
+        
+        app.updateQuality();
+        
+        // All should decrease by 2
+        assertEquals(8, items[0].quality);
+        assertEquals(6, items[1].quality);
+        assertEquals(4, items[2].quality);
+    }
+
+    @Test
+    @DisplayName("Mixed item types work together correctly")
+    void mixedItemTypesWorkTogether() {
+        Item[] items = new Item[] {
+            new Item("Normal Item", 5, 10),
+            new Item("Aged Brie", 5, 5),
+            new Item("Conjured Mana Cake", 5, 10),
+            new Item("Sulfuras, Hand of Ragnaros", 5, 80)
+        };
+        GildedRose app = new GildedRose(items);
+        
+        app.updateQuality();
+        
+        assertEquals(9, items[0].quality);  // Normal: -1
+        assertEquals(6, items[1].quality);  // Aged Brie: +1
+        assertEquals(8, items[2].quality);  // Conjured: -2
+        assertEquals(80, items[3].quality); // Sulfuras: no change
+    }
 }
